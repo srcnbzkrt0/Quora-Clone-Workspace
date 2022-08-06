@@ -7,11 +7,38 @@ import './css/QuoraHeader.css'
 import {Modal} from 'react-responsive-modal'
 import 'react-responsive-modal/styles.css'
 import CloseIcon from '@material-ui/icons/Close'
+import axios from 'axios'
 
 function QuoraHeader() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
+    const [question, setQuestion] = useState("")
     const Close = <CloseIcon/>;
+
+    const handleSubmit = async () => {
+        if (question !== "") {
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const body = {
+            questionName: question,
+            questionUrl: inputUrl,
+          };
+          await axios
+            .post("/api/questions", body, config)
+            .then((res) => {
+              console.log(res.data);
+              alert(res.data.message);
+              window.location.href = "/";
+            })
+            .catch((e) => {
+              console.log(e);
+              alert("Error in adding question");
+            });
+        }
+      };
 
   return (
     <div className = 'qHeader'>
@@ -61,7 +88,10 @@ function QuoraHeader() {
                         </div>
                     </div>
                     <div className='modal__Field'>
-                        <Input type="text" placeholder="Start your question with 'What','How','Why',etc."/>
+                        <Input 
+                        value = {question}
+                        onChange = {(e) => setQuestion(e.target.value)} 
+                        type="text" placeholder="Start your question with 'What','How','Why',etc."/>
                         <div style={{
                             display: "flex",
                             flexDirection: "column"
@@ -83,7 +113,7 @@ function QuoraHeader() {
                         <button className='cancel' onClick={()=>setIsModalOpen(false)}>
                             Cancel
                         </button>
-                        <button type="submit" className='add'>
+                        <button onClick={handleSubmit} type="submit" className='add'>
                             Add Question
                         </button>
                     </div>
