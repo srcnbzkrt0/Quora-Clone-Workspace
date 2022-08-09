@@ -1,78 +1,90 @@
-import { Avatar } from '@material-ui/core'
-import { ArrowDownwardOutlined, ArrowUpwardOutlined, ChatBubbleOutlined, MoreHorizOutlined, RepeatOneOutlined, ShareOutlined } from '@material-ui/icons'
-import React, {useState} from 'react'
-import './css/Post.css'
-import {Modal} from 'react-responsive-modal'
-import 'react-responsive-modal/styles.css'
-import CloseIcon from '@material-ui/icons/Close'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
+import { Avatar } from "@material-ui/core";
+import {
+  ArrowDownwardOutlined,
+  ArrowUpwardOutlined,
+  ChatBubbleOutlined,
+  MoreHorizOutlined,
+  RepeatOneOutlined,
+  ShareOutlined,
+} from "@material-ui/icons";
+import React, { useState } from "react";
+import "./css/Post.css";
+import { Modal } from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
+import CloseIcon from "@material-ui/icons/Close";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import ReactTimeAgo from "react-time-ago";
 import axios from "axios";
 import ReactHtmlParser from "html-react-parser";
 
 
-function LastSeen({date}){
-    return (
-        <div>
-            <ReactTimeAgo date = {date} locale ="en-US" timeStyle="round" />
-        </div>
-    )
-}
-function Post() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [answer, setAnswer] = useState("");
-    const Close = <CloseIcon/>;
-
-    const handleQuill = (value) => {
-        setAnswer(value);
-      };
-      // console.log(answer);
-    
-      const handleSubmit = async () => {
-        if (post?._id && answer !== "") {
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-          const body = {
-            answer: answer,
-            questionId: post?._id,
-            user: user,
-          };
-          await axios
-            .post("/api/answers", body, config)
-            .then((res) => {
-              console.log(res.data);
-              alert("Answer added succesfully");
-              setIsModalOpen(false);
-              window.location.href = "/";
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        }
-      };
-
+function LastSeen({ date }) {
   return (
-    <div className='post'>
-        <div className='post__info'>
-                <Avatar />
-                <h4>User Name</h4>
-                <small><LastSeen date={post?.createdAt}/></small>
-        </div>
-        <div className='post__body'>
-            <div className='post__question'>
-            <p>This is test question</p>
-            <button 
-             onClick={() => {
-                setIsModalOpen(true);
-                console.log(post?._id);
-              }} 
-            className='post__btnAnswer'>Answer
-            </button>
-            <Modal
+    <div>
+      <ReactTimeAgo date={date} locale="en-US" timeStyle="round" />
+    </div>
+  );
+}
+function Post({ post }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [answer, setAnswer] = useState("");
+  const Close = <CloseIcon />;
+
+
+  const handleQuill = (value) => {
+    setAnswer(value);
+  };
+  // console.log(answer);
+
+  const handleSubmit = async () => {
+    if (post?._id && answer !== "") {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const body = {
+        answer: answer,
+        questionId: post?._id,
+       
+      };
+      await axios
+        .post("/api/answers", body, config)
+        .then((res) => {
+          console.log(res.data);
+          alert("Answer added succesfully");
+          setIsModalOpen(false);
+          window.location.href = "/";
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
+  return (
+    <div className="post">
+      <div className="post__info">
+        <Avatar />
+        <h4>Username</h4>
+
+        <small>
+          <LastSeen date={post?.createdAt} />
+        </small>
+      </div>
+      <div className="post__body">
+        <div className="post__question">
+          <p>{post?.questionName}</p>
+          <button
+            onClick={() => {
+              setIsModalOpen(true);
+              console.log(post?._id);
+            }}
+            className="post__btnAnswer"
+          >
+            Answer
+          </button>
+          <Modal
             open={isModalOpen}
             closeIcon={Close}
             onClose={() => setIsModalOpen(false)}
@@ -81,11 +93,11 @@ function Post() {
             closeOnOverlayClick={false}
             styles={{
               overlay: {
-                height: 'auto'
+                height: "auto",
               },
             }}
-            >
-                <div className="modal__question">
+          >
+            <div className="modal__question">
               <h1>{post?.questionName}</h1>
               <p>
                 asked by <span className="name">Username</span> on{" "}
@@ -167,14 +179,14 @@ function Post() {
                 }}
                 className="post-answered"
               >
-                <Avatar />
+                <Avatar src={_a?.user?.photo} />
                 <div
                   style={{
                     margin: "0px 10px",
                   }}
                   className="post-info"
                 >
-                  <p>Username</p>
+                  <p>{_a?.user?.userName}</p>
                   <span>
                     <LastSeen date={_a?.createdAt} />
                   </span>
