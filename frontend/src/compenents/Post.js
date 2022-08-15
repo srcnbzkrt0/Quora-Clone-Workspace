@@ -17,6 +17,8 @@ import "react-quill/dist/quill.snow.css";
 import ReactTimeAgo from "react-time-ago";
 import axios from "axios";
 import ReactHtmlParser from "html-react-parser";
+import { useSelector } from "react-redux";
+import { selectUser } from "../feature/userSlice";
 
 
 function LastSeen({ date }) {
@@ -30,7 +32,7 @@ function Post({ post }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [answer, setAnswer] = useState("");
   const Close = <CloseIcon />;
-
+  const user = useSelector(selectUser);
 
   const handleQuill = (value) => {
     setAnswer(value);
@@ -47,7 +49,7 @@ function Post({ post }) {
       const body = {
         answer: answer,
         questionId: post?._id,
-       
+        user: user
       };
       await axios
         .post("/api/answers", body, config)
