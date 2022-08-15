@@ -67,8 +67,8 @@ function Post({ post }) {
   return (
     <div className="post">
       <div className="post__info">
-        <Avatar />
-        <h4>Username</h4>
+        <Avatar src={post?.user?.photo} />
+        <h4>{post?.user?.userName}</h4>
 
         <small>
           <LastSeen date={post?.createdAt} />
@@ -102,7 +102,7 @@ function Post({ post }) {
             <div className="modal__question">
               <h1>{post?.questionName}</h1>
               <p>
-                asked by <span className="name">Username</span> on{" "}
+                asked by <span className="name">{post?.user?.userName}</span> on{" "}
                 <span className="name">
                   {new Date(post?.createdAt).toLocaleString()}
                 </span>
